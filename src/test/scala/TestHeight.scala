@@ -14,6 +14,6 @@ class TestHeight extends AnyFunSuite:
   testHeight("simple location", simpleLocation, 2)
   testHeight("basic group", basicGroup, 2)
   testHeight("simple group", simpleGroup, 3)
-  testHeight("complex group", complexGroup, 5) // TO DO: fix this test 
+  testHeight("complex group", complexGroup, 6)  
 
 end TestHeight
