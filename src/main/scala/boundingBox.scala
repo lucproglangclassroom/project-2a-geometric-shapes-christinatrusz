@@ -1,32 +1,37 @@
 package edu.luc.cs.laufer.cs371.shapes
 
 import Shape.*
+import com.typesafe.scalalogging.Logger
 
 object boundingBox:
-  def apply(s: Shape): Location = s match
-    case Rectangle(width, height) =>
-      Location(0, 0, Rectangle(width, height))
+  private val logger = Logger("BoundingBox")
 
-    case Ellipse(rx, ry) =>
-      // Ellipse bounding box: top-left (-rx, -ry), width=2*rx, height=2*ry
-      Location(-rx, -ry, Rectangle(2 * rx, 2 * ry))
+  def apply(s: Shape): Location =
+    val result: Location = s match
+      case Rectangle(width, height) =>
+        Location(0, 0, Rectangle(width, height))
 
-    case Location(x, y, shape) =>
-      val Location(x0, y0, Rectangle(w, h)) = apply(shape)
-      Location(x + x0, y + y0, Rectangle(w, h))
+      case Ellipse(rx, ry) =>
+        Location(-rx, -ry, Rectangle(2 * rx, 2 * ry))
 
-    case Group(shapes*) =>
-      val boxes = shapes.map(apply)
-      val xs = boxes.map(_.x)
-      val ys = boxes.map(_.y)
-      val ws = boxes.map(b => b.x + b.shape.asInstanceOf[Rectangle].width)
-      val hs = boxes.map(b => b.y + b.shape.asInstanceOf[Rectangle].height)
+      case Location(x, y, shape) =>
+        val Location(x0, y0, Rectangle(w, h)) = apply(shape).asInstanceOf[Location] // <-- fix
+        Location(x + x0, y + y0, Rectangle(w, h))
 
-      val minX = xs.min
-      val minY = ys.min
-      val maxX = ws.max
-      val maxY = hs.max
+      case Group(shapes*) =>
+        val boxes = shapes.map(apply)
+        val xs = boxes.map(_.x)
+        val ys = boxes.map(_.y)
+        val ws = boxes.map(b => b.x + b.shape.asInstanceOf[Rectangle].width)
+        val hs = boxes.map(b => b.y + b.shape.asInstanceOf[Rectangle].height)
 
-      Location(minX, minY, Rectangle(maxX - minX, maxY - minY))
+        val minX = xs.min
+        val minY = ys.min
+        val maxX = ws.max
+        val maxY = hs.max
+
+        Location(minX, minY, Rectangle(maxX - minX, maxY - minY))
+
+    logger.info(s"Bounding box for $s => $result")
+    result
 end boundingBox
-
