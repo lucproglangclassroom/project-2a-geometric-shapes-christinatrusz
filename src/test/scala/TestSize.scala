@@ -10,6 +10,7 @@ class TestSize extends AnyFunSuite:
     test(description):
       assert(size(s) == expected)
 
+  testSize("simple ellipse", simpleEllipse, 1)
   testSize("simple rectangle", simpleRectangle, 1)
   testSize("simple location", simpleLocation, 1)
   testSize("basic group", basicGroup, 2)

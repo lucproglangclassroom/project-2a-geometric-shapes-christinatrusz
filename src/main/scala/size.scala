@@ -10,7 +10,7 @@ object size:
     val result = s match
       case Rectangle(_, _) | Ellipse(_, _) => 1
       case Location(_, _, shape) => apply(shape)
-      case Group(shapes*) => shapes.map(apply).sum
+      case Group(shapes*) => shapes.foldLeft(0)((acc, shape) => acc + apply(shape)) // Use of foldLeft
 
     logger.info(s"Size of $s => $result")
     result

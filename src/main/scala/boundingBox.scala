@@ -15,8 +15,11 @@ object boundingBox:
         Location(-rx, -ry, Rectangle(2 * rx, 2 * ry))
 
       case Location(x, y, shape) =>
-        val Location(x0, y0, Rectangle(w, h)) = apply(shape).asInstanceOf[Location] // <-- fix
-        Location(x + x0, y + y0, Rectangle(w, h))
+        apply(shape) match {
+          case Location(x0, y0, Rectangle(w, h)) =>
+            Location(x + x0, y + y0, Rectangle(w, h))
+          case _ => throw new IllegalStateException("Bounding box should always be Location with Rectangle")
+        }
 
       case Group(shapes*) =>
         val boxes = shapes.map(apply)
